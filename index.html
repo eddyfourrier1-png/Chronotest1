@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoTech - Chronomètre & Réveil High-Tech</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00bfff;
+            opacity: 0.8;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88, 0 0 80px #00ff88; }
+        }
+
+        .main-display {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .timer-section {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timer-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        .timer-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .time-display {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-shadow: 0 0 10px #00ff88;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00bfff);
+            border: none;
+            color: #000;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff4444, #ff8844);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #4444ff, #8844ff);
+        }
+
+        .settings-panel {
+            background: rgba(0, 191, 255, 0.1);
+            border: 2px solid #00bfff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
+        }
+
+        .settings-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #00bfff;
+        }
+
+        .setting-group {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .setting-item {
+            text-align: center;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #00bfff;
+        }
+
+        .time-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00bfff;
+            border-radius: 10px;
+            color: #00ff88;
+            font-size: 1.2rem;
+            padding: 10px;
+            width: 80px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .alarm-sound {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .sound-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #00ff88;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff4444;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ff8844;
+            margin-top: 5px;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .main-display { gap: 20px; }
+            .timer-section { min-width: 300px; }
+            .time-display { font-size: 3rem; }
+            .setting-group { gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">CHRONOTECH</h1>
+            <p class="subtitle">Interface de Chronométrage Haute Précision</p>
+        </header>
+
+        <div class="main-display">
+            <!-- Chronomètre -->
+            <div class="timer-section">
+                <h2 class="timer-title">CHRONOMÈTRE</h2>
+                <div class="time-display" id="chrono-display">00:00:00.000</div>
+                <div class="controls">
+                    <button class="btn" id="chrono-start">DÉMARRER</button>
+                    <button class="btn secondary" id="chrono-pause">PAUSE</button>
+                    <button class="btn danger" id="chrono-reset">RÉINITIALISER</button>
+                </div>
+            </div>
+
+            <!-- Minuteur -->
+            <div class="timer-section">
+                <h2 class="timer-title">MINUTEUR</h2>
+                <div class="time-display" id="timer-display">00:00:00</div>
+                <div class="controls">
+                    <button class="btn" id="timer-start">DÉMARRER</button>
+                    <button class="btn secondary" id="timer-pause">PAUSE</button>
+                    <button class="btn danger" id="timer-reset">RÉINITIALISER</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-chrono">00:00:00</div>
+                <div class="stat-label">TEMPS TOTAL CHRONO</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="timer-count">0</div>
+                <div class="stat-label">MINUTEURS TERMINÉS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="precision">±1ms</div>
+                <div class="stat-label">PRÉCISION</div>
+            </div>
+        </div>
+
+        <!-- Paramètres -->
+        <div class="settings-panel">
+            <h2 class="settings-title">PARAMÈTRES SYSTÈME</h2>
+
+            <div class="setting-group">
+                <div class="setting-item">
+                    <label class="setting-label">HEURES</label>
+                    <input type="number" class="time-input" id="hours" min="0" max="23" value="0">
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">MINUTES</label>
+                    <input type="number" class="time-input" id="minutes" min="0" max="59" value="5">
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">SECONDES</label>
+                    <input type="number" class="time-input" id="seconds" min="0" max="59" value="0">
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <button class="btn" id="set-timer">PROGRAMMER MINUTEUR</button>
+                <button class="btn secondary" id="quick-5min">5 MIN</button>
+                <button class="btn secondary" id="quick-10min">10 MIN</button>
+                <button class="btn secondary" id="quick-15min">15 MIN</button>
+            </div>
+
+            <div class="alarm-sound">
+                <div class="sound-toggle">
+                    <span>Son d'alarme</span>
+                    <div class="toggle-switch" id="sound-toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ChronoTech {
+            constructor() {
+                this.chronoRunning = false;
+                this.chronoStartTime = 0;
+                this.chronoElapsed = 0;
+                this.chronoInterval = null;
+
+                this.timerRunning = false;
+                this.timerDuration = 0;
+                this.timerRemaining = 0;
+                this.timerInterval = null;
+
+                this.totalChronoTime = 0;
+                this.completedTimers = 0;
+                this.soundEnabled = true;
+
+                this.initializeElements();
+                this.bindEvents();
+                this.createParticles();
+            }
+
+            initializeElements() {
+                this.chronoDisplay = document.getElementById('chrono-display');
+                this.timerDisplay = document.getElementById('timer-display');
+                this.totalChrono = document.getElementById('total-chrono');
+                this.timerCount = document.getElementById('timer-count');
+
+                this.chronoStartBtn = document.getElementById('chrono-start');
+                this.chronoPauseBtn = document.getElementById('chrono-pause');
+                this.chronoResetBtn = document.getElementById('chrono-reset');
+
+                this.timerStartBtn = document.getElementById('timer-start');
+                this.timerPauseBtn = document.getElementById('timer-pause');
+                this.timerResetBtn = document.getElementById('timer-reset');
+
+                this.hoursInput = document.getElementById('hours');
+                this.minutesInput = document.getElementById('minutes');
+                this.secondsInput = document.getElementById('seconds');
+
+                this.setTimerBtn = document.getElementById('set-timer');
+                this.quick5Btn = document.getElementById('quick-5min');
+                this.quick10Btn = document.getElementById('quick-10min');
+                this.quick15Btn = document.getElementById('quick-15min');
+
+                this.soundToggle = document.getElementById('sound-toggle');
+            }
+
+            bindEvents() {
+                // Chronomètre
+                this.chronoStartBtn.addEventListener('click', () => this.toggleChrono());
+                this.chronoPauseBtn.addEventListener('click', () => this.pauseChrono());
+                this.chronoResetBtn.addEventListener('click', () => this.resetChrono());
+
+                // Minuteur
+                this.timerStartBtn.addEventListener('click', () => this.toggleTimer());
+                this.timerPauseBtn.addEventListener('click', () => this.pauseTimer());
+                this.timerResetBtn.addEventListener('click', () => this.resetTimer());
+
+                // Paramètres
+                this.setTimerBtn.addEventListener('click', () => this.setTimer());
+                this.quick5Btn.addEventListener('click', () => this.setQuickTimer(5));
+                this.quick10Btn.addEventListener('click', () => this.setQuickTimer(10));
+                this.quick15Btn.addEventListener('click', () => this.setQuickTimer(15));
+
+                // Son
+                this.soundToggle.addEventListener('click', () => this.toggleSound());
+            }
+
+            // Chronomètre
+            toggleChrono() {
+                if (!this.chronoRunning) {
+                    this.startChrono();
+                } else {
+                    this.pauseChrono();
+                }
+            }
+
+            startChrono() {
+                this.chronoRunning = true;
+                this.chronoStartTime = Date.now() - this.chronoElapsed;
+                this.chronoStartBtn.textContent = 'ARRÊTER';
+                this.chronoStartBtn.classList.add('danger');
+
+                this.chronoInterval = setInterval(() => {
+                    this.chronoElapsed = Date.now() - this.chronoStartTime;
+                    this.updateChronoDisplay();
+                }, 10); // Mise à jour toutes les 10ms pour la précision
+            }
+
+            pauseChrono() {
+                this.chronoRunning = false;
+                clearInterval(this.chronoInterval);
+                this.chronoStartBtn.textContent = 'DÉMARRER';
+                this.chronoStartBtn.classList.remove('danger');
+            }
+
+            resetChrono() {
+                this.pauseChrono();
+                this.chronoElapsed = 0;
+                this.updateChronoDisplay();
+                this.totalChronoTime += this.chronoElapsed;
+                this.updateStats();
+            }
+
+            updateChronoDisplay() {
+                const totalMs = this.chronoElapsed;
+                const hours = Math.floor(totalMs / 3600000);
+                const minutes = Math.floor((totalMs % 3600000) / 60000);
+                const seconds = Math.floor((totalMs % 60000) / 1000);
+                const milliseconds = Math.floor((totalMs % 1000));
+
+                this.chronoDisplay.textContent =
+                    `${hours.toString().padStart(2, '0')}:` +
+                    `${minutes.toString().padStart(2, '0')}:` +
+                    `${seconds.toString().padStart(2, '0')}.` +
+                    `${milliseconds.toString().padStart(3, '0')}`;
+            }
+
+            // Minuteur
+            toggleTimer() {
+                if (!this.timerRunning) {
+                    if (this.timerRemaining > 0) {
+                        this.startTimer();
+                    }
+                } else {
+                    this.pauseTimer();
+                }
+            }
+
+            startTimer() {
+                this.timerRunning = true;
+                this.timerStartBtn.textContent = 'ARRÊTER';
+                this.timerStartBtn.classList.add('danger');
+
+                this.timerInterval = setInterval(() => {
+                    this.timerRemaining -= 1000;
+                    this.updateTimerDisplay();
+
+                    if (this.timerRemaining <= 0) {
+                        this.timerFinished();
+                    }
+                }, 1000);
+            }
+
+            pauseTimer() {
+                this.timerRunning = false;
+                clearInterval(this.timerInterval);
+                this.timerStartBtn.textContent = 'DÉMARRER';
+                this.timerStartBtn.classList.remove('danger');
+            }
+
+            resetTimer() {
+                this.pauseTimer();
+                this.timerRemaining = 0;
+                this.updateTimerDisplay();
+            }
+
+            setTimer() {
+                const hours = parseInt(this.hoursInput.value) || 0;
+                const minutes = parseInt(this.minutesInput.value) || 0;
+                const seconds = parseInt(this.secondsInput.value) || 0;
+
+                this.timerDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                this.timerRemaining = this.timerDuration;
+                this.updateTimerDisplay();
+            }
+
+            setQuickTimer(minutes) {
+                this.hoursInput.value = 0;
+                this.minutesInput.value = minutes;
+                this.secondsInput.value = 0;
+                this.setTimer();
+            }
+
+            updateTimerDisplay() {
+                const totalSeconds = Math.ceil(this.timerRemaining / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                this.timerDisplay.textContent =
+                    `${hours.toString().padStart(2, '0')}:` +
+                    `${minutes.toString().padStart(2, '0')}:` +
+                    `${seconds.toString().padStart(2, '0')}`;
+
+                // Changement de couleur quand il reste peu de temps
+                if (this.timerRemaining <= 10000) { // 10 secondes
+                    this.timerDisplay.style.color = '#ff4444';
+                } else if (this.timerRemaining <= 30000) { // 30 secondes
+                    this.timerDisplay.style.color = '#ff8844';
+                } else {
+                    this.timerDisplay.style.color = '#00ff88';
+                }
+            }
+
+            timerFinished() {
+                this.pauseTimer();
+                this.completedTimers++;
+                this.updateStats();
+
+                if (this.soundEnabled) {
+                    this.playAlarm();
+                }
+
+                // Animation de fin
+                this.timerDisplay.style.animation = 'blink 0.5s infinite';
+                setTimeout(() => {
+                    this.timerDisplay.style.animation = '';
+                }, 3000);
+            }
+
+            // Audio
+            playAlarm() {
+                // Création d'un son d'alarme simple
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
+
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                this.soundToggle.classList.toggle('active');
+            }
+
+            // Statistiques
+            updateStats() {
+                const totalMs = this.totalChronoTime + this.chronoElapsed;
+                const hours = Math.floor(totalMs / 3600000);
+                const minutes = Math.floor((totalMs % 3600000) / 60000);
+                const seconds = Math.floor((totalMs % 60000) / 1000);
+
+                this.totalChrono.textContent =
+                    `${hours.toString().padStart(2, '0')}:` +
+                    `${minutes.toString().padStart(2, '0')}:` +
+                    `${seconds.toString().padStart(2, '0')}`;
+
+                this.timerCount.textContent = this.completedTimers;
+            }
+
+            // Particules d'arrière-plan
+            createParticles() {
+                const particlesContainer = document.getElementById('particles');
+
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.width = Math.random() * 4 + 2 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        // Animation de clignotement pour l'alarme
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChronoTech();
+        });
+    </script>
+</body>
+</html>
